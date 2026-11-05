@@ -1,0 +1,17 @@
+{
+  "type": "enum",
+  "title": { "en": "Mode", "nl": "Modus" },
+  "getable": true,
+  "setable": true,
+  "uiComponent": "picker",
+  "icon": "/assets/capabilities/mode.svg",
+  "values": [
+    { "id": "schedule", "title": { "en": "Schedule", "nl": "Programma" } },
+    { "id": "comfort", "title": { "en": "Comfort (temporary)", "nl": "Comfort (tijdelijk)" } },
+    { "id": "manual", "title": { "en": "Manual", "nl": "Handmatig" } },
+    { "id": "boost", "title": { "en": "Boost (1 hour)", "nl": "Boost (1 uur)" } },
+    { "id": "eco", "title": { "en": "Eco", "nl": "Eco" } },
+    { "id": "frost_protection", "title": { "en": "Frost protection", "nl": "Vorstbeveiliging" } },
+    { "id": "vacation", "title": { "en": "Vacation", "nl": "Vakantie" } }
+  ]
+}

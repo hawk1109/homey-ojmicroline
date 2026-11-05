@@ -1,0 +1,11 @@
+{
+  "type": "number",
+  "title": { "en": "Energy today", "nl": "Energie vandaag" },
+  "units": { "en": "kWh" },
+  "decimals": 2,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "/assets/capabilities/energy.svg",
+  "insights": true
+}

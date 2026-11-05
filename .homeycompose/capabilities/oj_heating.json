@@ -1,0 +1,11 @@
+{
+  "type": "boolean",
+  "title": { "en": "Heating", "nl": "Verwarmt" },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "/assets/capabilities/heating.svg",
+  "insights": true,
+  "insightsTitleTrue": { "en": "Heating on", "nl": "Verwarming aan" },
+  "insightsTitleFalse": { "en": "Heating off", "nl": "Verwarming uit" }
+}

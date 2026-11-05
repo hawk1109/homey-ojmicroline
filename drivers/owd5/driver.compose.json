@@ -1,0 +1,84 @@
+{
+  "name": {
+    "en": "WiFi thermostat (OWD5 / MWD5)",
+    "nl": "WiFi-thermostaat (OWD5 / MWD5)"
+  },
+  "class": "thermostat",
+  "capabilities": [
+    "target_temperature",
+    "measure_temperature",
+    "measure_temperature.floor",
+    "measure_temperature.room",
+    "oj_regulation_mode",
+    "oj_heating",
+    "measure_power",
+    "meter_power",
+    "oj_energy_today"
+  ],
+  "capabilitiesOptions": {
+    "target_temperature": {
+      "min": 5,
+      "max": 40,
+      "step": 0.5
+    },
+    "measure_temperature": {
+      "title": {
+        "en": "Temperature",
+        "nl": "Temperatuur"
+      }
+    },
+    "measure_temperature.floor": {
+      "title": {
+        "en": "Floor temperature",
+        "nl": "Vloertemperatuur"
+      }
+    },
+    "measure_temperature.room": {
+      "title": {
+        "en": "Room temperature",
+        "nl": "Ruimtetemperatuur"
+      }
+    },
+    "meter_power": {
+      "title": {
+        "en": "Energy total",
+        "nl": "Energie totaal"
+      }
+    }
+  },
+  "platforms": [
+    "local"
+  ],
+  "connectivity": [
+    "cloud"
+  ],
+  "images": {
+    "small": "/drivers/owd5/assets/images/small.png",
+    "large": "/drivers/owd5/assets/images/large.png",
+    "xlarge": "/drivers/owd5/assets/images/xlarge.png"
+  },
+  "pair": [
+    {
+      "id": "login",
+      "navigation": {
+        "next": "list_devices"
+      }
+    },
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ],
+  "repair": [
+    {
+      "id": "repair_login"
+    }
+  ]
+}

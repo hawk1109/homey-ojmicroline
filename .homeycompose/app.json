@@ -1,0 +1,35 @@
+{
+  "id": "nl.hawk-it.ojmicroline",
+  "version": "1.0.0",
+  "compatibility": ">=12.0.0",
+  "sdk": 3,
+  "platforms": ["local"],
+  "brandColor": "#E8572A",
+  "name": { "en": "OJ Microline", "nl": "OJ Microline" },
+  "description": {
+    "en": "Warm floors, controlled from Homey",
+    "nl": "Warme vloeren, geregeld vanuit Homey"
+  },
+  "category": ["climate"],
+  "tags": {
+    "en": ["oj", "oj electronics", "microline", "owd5", "mwd5", "floor heating", "underfloor heating", "thermostat", "swatt", "schluter", "ditra heat", "microtemp"],
+    "nl": ["oj", "oj electronics", "microline", "owd5", "mwd5", "vloerverwarming", "elektrische vloerverwarming", "thermostaat", "swatt", "schluter", "ditra heat", "microtemp"]
+  },
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Andre van Wijk",
+    "email": "andre.van.wijk@hawk-it.nl"
+  },
+  "homepage": "https://hawk-it.nl",
+  "support": "mailto:andre.van.wijk@hawk-it.nl",
+  "source": "https://github.com/hawk1109/homey-ojmicroline",
+  "bugs": { "url": "https://github.com/hawk1109/homey-ojmicroline/issues" },
+  "contributors": {
+    "developers": [{ "name": "Andre van Wijk", "email": "andre.van.wijk@hawk-it.nl" }]
+  }
+}

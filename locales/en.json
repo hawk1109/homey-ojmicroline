@@ -1,0 +1,34 @@
+{
+  "pair": {
+    "title": "Connect your OJ account",
+    "intro": "Sign in with the same account you use in the thermostat's app. All WiFi thermostats on the account will be found.",
+    "app": "App you use",
+    "app_ojmicroline": "OJ Microline (OWD5 app)",
+    "app_swatt": "SWATT",
+    "app_schluter": "Schlüter HEAT CONTROL",
+    "app_microtemp": "Microtemp",
+    "username": "Username",
+    "password": "Password",
+    "connect": "Connect",
+    "connecting": "Connecting…",
+    "error_required": "Please enter your username and password.",
+    "hint": "Your thermostat must already be linked to this account in the app, and connected to WiFi.",
+    "not_logged_in": "Please sign in first."
+  },
+  "device": {
+    "offline": "Thermostat is offline (no WiFi connection to the OJ cloud)",
+    "auth_failed": "Sign-in to the OJ cloud failed. Use Repair to enter your credentials again.",
+    "no_credentials": "No account linked. Use Repair to sign in.",
+    "no_data": "No data received from the thermostat yet. Try again in a minute.",
+    "vacation_readonly": "Vacation mode can only be planned in the OJ app or on the thermostat."
+  },
+  "mode": {
+    "schedule": "Schedule",
+    "comfort": "Comfort",
+    "manual": "Manual",
+    "vacation": "Vacation",
+    "frost_protection": "Frost protection",
+    "boost": "Boost",
+    "eco": "Eco"
+  }
+}

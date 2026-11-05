@@ -1,0 +1,137 @@
+<style>
+  .oj-wrap { display: flex; flex-direction: column; gap: 18px; padding-top: 4px; }
+  .oj-hero { display: flex; align-items: center; gap: 14px; }
+  .oj-hero svg { flex: 0 0 56px; width: 56px; height: 56px; }
+  .oj-hero h1 { margin: 0; font-size: 20px; line-height: 1.25; font-weight: 600; }
+  .oj-intro { margin: 0; color: var(--homey-color-text-light, #6b7280); font-size: 14px; line-height: 1.45; }
+  .oj-apps { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .oj-app { position: relative; }
+  .oj-app input { position: absolute; opacity: 0; pointer-events: none; }
+  .oj-app label {
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    min-height: 44px; padding: 8px 10px; border-radius: 12px; cursor: pointer;
+    border: 1.5px solid var(--homey-color-border, #e5e7eb);
+    font-size: 13px; line-height: 1.25; font-weight: 500;
+    transition: border-color .15s, background-color .15s, color .15s;
+  }
+  .oj-app input:checked + label { border-color: #E8572A; background: rgba(232, 87, 42, .08); color: #C2410C; }
+  .oj-hint { font-size: 12px; color: var(--homey-color-text-light, #6b7280); line-height: 1.4; margin: 0; }
+  .oj-error {
+    display: none; padding: 10px 12px; border-radius: 10px; font-size: 13px; line-height: 1.4;
+    background: rgba(220, 38, 38, .08); color: #B91C1C;
+  }
+  .oj-error.show { display: block; }
+  .oj-pw { position: relative; }
+  .oj-pw button {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    border: 0; background: none; padding: 6px; cursor: pointer; color: var(--homey-color-text-light, #6b7280);
+  }
+</style>
+
+<div class="oj-wrap">
+  <div class="oj-hero">
+    <svg viewBox="0 0 64 64" aria-hidden="true">
+      <defs>
+        <linearGradient id="ojg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#F97316"/><stop offset="1" stop-color="#DC2626"/>
+        </linearGradient>
+      </defs>
+      <rect width="64" height="64" rx="16" fill="url(#ojg)"/>
+      <path d="M16 40c4-4 8 4 12 0s8 4 12 0 8 4 8 0" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" opacity=".55"/>
+      <path d="M16 48c4-4 8 4 12 0s8 4 12 0 8 4 8 0" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/>
+      <rect x="22" y="12" width="20" height="20" rx="5" fill="none" stroke="#fff" stroke-width="3"/>
+      <circle cx="32" cy="22" r="3.2" fill="#fff"/>
+    </svg>
+    <h1 data-i18n="pair.title"></h1>
+  </div>
+
+  <p class="oj-intro" data-i18n="pair.intro"></p>
+
+  <form class="homey-form" id="oj-form" autocomplete="on" onsubmit="return false">
+    <div class="homey-form-group">
+      <span class="homey-form-label" data-i18n="pair.app"></span>
+      <div class="oj-apps" role="radiogroup">
+        <div class="oj-app"><input type="radio" name="app" id="app-oj" value="ojmicroline" checked><label for="app-oj" data-i18n="pair.app_ojmicroline"></label></div>
+        <div class="oj-app"><input type="radio" name="app" id="app-swatt" value="swatt"><label for="app-swatt" data-i18n="pair.app_swatt"></label></div>
+        <div class="oj-app"><input type="radio" name="app" id="app-schluter" value="schluter"><label for="app-schluter" data-i18n="pair.app_schluter"></label></div>
+        <div class="oj-app"><input type="radio" name="app" id="app-microtemp" value="microtemp"><label for="app-microtemp" data-i18n="pair.app_microtemp"></label></div>
+      </div>
+    </div>
+
+    <div class="homey-form-group">
+      <label class="homey-form-label" for="username" data-i18n="pair.username"></label>
+      <input class="homey-form-input" id="username" type="text" autocomplete="username" autocapitalize="off" spellcheck="false">
+    </div>
+
+    <div class="homey-form-group">
+      <label class="homey-form-label" for="password" data-i18n="pair.password"></label>
+      <div class="oj-pw">
+        <input class="homey-form-input" id="password" type="password" autocomplete="current-password">
+        <button type="button" id="toggle-pw" aria-label="Show password">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="oj-error" id="oj-error" role="alert"></div>
+
+    <button class="homey-button-primary-full" id="connect" type="submit" data-i18n="pair.connect"></button>
+  </form>
+
+  <p class="oj-hint" data-i18n="pair.hint"></p>
+</div>
+
+<script type="application/javascript">
+  (function () {
+    // Set by the repair copy of this view; pairing continues to the device list instead.
+    var IS_REPAIR = true;
+
+    var $ = function (id) { return document.getElementById(id); };
+    var btn = $('connect');
+    var err = $('oj-error');
+
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      el.textContent = Homey.__(el.getAttribute('data-i18n'));
+    });
+
+    $('toggle-pw').addEventListener('click', function () {
+      var pw = $('password');
+      pw.type = pw.type === 'password' ? 'text' : 'password';
+    });
+
+    function showError(msg) {
+      err.textContent = msg;
+      err.classList.add('show');
+    }
+
+    $('oj-form').addEventListener('submit', function () {
+      err.classList.remove('show');
+      var username = $('username').value.trim();
+      var password = $('password').value;
+      var app = document.querySelector('input[name="app"]:checked').value;
+
+      if (!username || !password) {
+        showError(Homey.__('pair.error_required'));
+        return;
+      }
+
+      btn.disabled = true;
+      btn.classList.add('is-loading');
+      btn.textContent = Homey.__('pair.connecting');
+
+      Homey.emit('login', { username: username, password: password, app: app })
+        .then(function () {
+          if (IS_REPAIR) Homey.done();
+          else Homey.nextView();
+        })
+        .catch(function (e) {
+          showError(e && e.message ? e.message : String(e));
+          btn.disabled = false;
+          btn.classList.remove('is-loading');
+          btn.textContent = Homey.__('pair.connect');
+        });
+    });
+
+    Homey.ready();
+  })();
+</script>

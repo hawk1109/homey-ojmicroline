@@ -1,0 +1,708 @@
+{
+  "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
+  "id": "nl.hawk-it.ojmicroline",
+  "version": "1.0.0",
+  "compatibility": ">=12.0.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "brandColor": "#E8572A",
+  "name": {
+    "en": "OJ Microline",
+    "nl": "OJ Microline"
+  },
+  "description": {
+    "en": "Warm floors, controlled from Homey",
+    "nl": "Warme vloeren, geregeld vanuit Homey"
+  },
+  "category": [
+    "climate"
+  ],
+  "tags": {
+    "en": [
+      "oj",
+      "oj electronics",
+      "microline",
+      "owd5",
+      "mwd5",
+      "floor heating",
+      "underfloor heating",
+      "thermostat",
+      "swatt",
+      "schluter",
+      "ditra heat",
+      "microtemp"
+    ],
+    "nl": [
+      "oj",
+      "oj electronics",
+      "microline",
+      "owd5",
+      "mwd5",
+      "vloerverwarming",
+      "elektrische vloerverwarming",
+      "thermostaat",
+      "swatt",
+      "schluter",
+      "ditra heat",
+      "microtemp"
+    ]
+  },
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Andre van Wijk",
+    "email": "andre.van.wijk@hawk-it.nl"
+  },
+  "homepage": "https://hawk-it.nl",
+  "support": "mailto:andre.van.wijk@hawk-it.nl",
+  "source": "https://github.com/hawk1109/homey-ojmicroline",
+  "bugs": {
+    "url": "https://github.com/hawk1109/homey-ojmicroline/issues"
+  },
+  "contributors": {
+    "developers": [
+      {
+        "name": "Andre van Wijk",
+        "email": "andre.van.wijk@hawk-it.nl"
+      }
+    ]
+  },
+  "flow": {
+    "triggers": [
+      {
+        "id": "heating_started",
+        "title": {
+          "en": "Heating turned on",
+          "nl": "Verwarming ging aan"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=owd5"
+          }
+        ]
+      },
+      {
+        "id": "heating_stopped",
+        "title": {
+          "en": "Heating turned off",
+          "nl": "Verwarming ging uit"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=owd5"
+          }
+        ]
+      },
+      {
+        "id": "mode_changed",
+        "title": {
+          "en": "Mode changed",
+          "nl": "Modus is veranderd"
+        },
+        "tokens": [
+          {
+            "name": "mode",
+            "type": "string",
+            "title": {
+              "en": "Mode",
+              "nl": "Modus"
+            },
+            "example": {
+              "en": "Schedule",
+              "nl": "Programma"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=owd5"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "id": "is_heating",
+        "title": {
+          "en": "Is !{{heating|not heating}}",
+          "nl": "Verwarmt !{{wel|niet}}"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=owd5"
+          }
+        ]
+      },
+      {
+        "id": "mode_is",
+        "title": {
+          "en": "Mode !{{is|is not}}",
+          "nl": "Modus !{{is|is niet}}"
+        },
+        "titleFormatted": {
+          "en": "Mode !{{is|is not}} [[mode]]",
+          "nl": "Modus !{{is|is niet}} [[mode]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=owd5"
+          },
+          {
+            "name": "mode",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "schedule",
+                "title": {
+                  "en": "Schedule",
+                  "nl": "Programma"
+                }
+              },
+              {
+                "id": "comfort",
+                "title": {
+                  "en": "Comfort",
+                  "nl": "Comfort"
+                }
+              },
+              {
+                "id": "manual",
+                "title": {
+                  "en": "Manual",
+                  "nl": "Handmatig"
+                }
+              },
+              {
+                "id": "boost",
+                "title": {
+                  "en": "Boost",
+                  "nl": "Boost"
+                }
+              },
+              {
+                "id": "eco",
+                "title": {
+                  "en": "Eco",
+                  "nl": "Eco"
+                }
+              },
+              {
+                "id": "frost_protection",
+                "title": {
+                  "en": "Frost protection",
+                  "nl": "Vorstbeveiliging"
+                }
+              },
+              {
+                "id": "vacation",
+                "title": {
+                  "en": "Vacation",
+                  "nl": "Vakantie"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "id": "resume_schedule",
+        "title": {
+          "en": "Resume schedule",
+          "nl": "Programma hervatten"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=owd5"
+          }
+        ]
+      },
+      {
+        "id": "set_comfort",
+        "title": {
+          "en": "Set temporary temperature",
+          "nl": "Tijdelijke temperatuur instellen"
+        },
+        "titleFormatted": {
+          "en": "Set [[temperature]] °C for [[minutes]] minutes, then resume schedule",
+          "nl": "Zet [[temperature]] °C voor [[minutes]] minuten, daarna terug naar programma"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=owd5"
+          },
+          {
+            "name": "temperature",
+            "type": "range",
+            "min": 5,
+            "max": 40,
+            "step": 0.5,
+            "label": " °C",
+            "labelDecimals": 1,
+            "title": {
+              "en": "Temperature",
+              "nl": "Temperatuur"
+            }
+          },
+          {
+            "name": "minutes",
+            "type": "number",
+            "min": 15,
+            "max": 1440,
+            "step": 15,
+            "placeholder": {
+              "en": "240",
+              "nl": "240"
+            },
+            "title": {
+              "en": "Minutes",
+              "nl": "Minuten"
+            }
+          }
+        ]
+      },
+      {
+        "id": "set_manual",
+        "title": {
+          "en": "Hold temperature (manual)",
+          "nl": "Temperatuur vasthouden (handmatig)"
+        },
+        "titleFormatted": {
+          "en": "Hold [[temperature]] °C until changed",
+          "nl": "Houd [[temperature]] °C vast tot wijziging"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=owd5"
+          },
+          {
+            "name": "temperature",
+            "type": "range",
+            "min": 5,
+            "max": 40,
+            "step": 0.5,
+            "label": " °C",
+            "labelDecimals": 1,
+            "title": {
+              "en": "Temperature",
+              "nl": "Temperatuur"
+            }
+          }
+        ]
+      },
+      {
+        "id": "boost",
+        "title": {
+          "en": "Boost for 1 hour",
+          "nl": "Boost gedurende 1 uur"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=owd5"
+          }
+        ]
+      },
+      {
+        "id": "set_mode",
+        "title": {
+          "en": "Set mode",
+          "nl": "Modus instellen"
+        },
+        "titleFormatted": {
+          "en": "Set mode to [[mode]]",
+          "nl": "Zet modus op [[mode]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=owd5"
+          },
+          {
+            "name": "mode",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "schedule",
+                "title": {
+                  "en": "Schedule",
+                  "nl": "Programma"
+                }
+              },
+              {
+                "id": "comfort",
+                "title": {
+                  "en": "Comfort",
+                  "nl": "Comfort"
+                }
+              },
+              {
+                "id": "manual",
+                "title": {
+                  "en": "Manual",
+                  "nl": "Handmatig"
+                }
+              },
+              {
+                "id": "boost",
+                "title": {
+                  "en": "Boost",
+                  "nl": "Boost"
+                }
+              },
+              {
+                "id": "eco",
+                "title": {
+                  "en": "Eco",
+                  "nl": "Eco"
+                }
+              },
+              {
+                "id": "frost_protection",
+                "title": {
+                  "en": "Frost protection",
+                  "nl": "Vorstbeveiliging"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "drivers": [
+    {
+      "name": {
+        "en": "WiFi thermostat (OWD5 / MWD5)",
+        "nl": "WiFi-thermostaat (OWD5 / MWD5)"
+      },
+      "class": "thermostat",
+      "capabilities": [
+        "target_temperature",
+        "measure_temperature",
+        "measure_temperature.floor",
+        "measure_temperature.room",
+        "oj_regulation_mode",
+        "oj_heating",
+        "measure_power",
+        "meter_power",
+        "oj_energy_today"
+      ],
+      "capabilitiesOptions": {
+        "target_temperature": {
+          "min": 5,
+          "max": 40,
+          "step": 0.5
+        },
+        "measure_temperature": {
+          "title": {
+            "en": "Temperature",
+            "nl": "Temperatuur"
+          }
+        },
+        "measure_temperature.floor": {
+          "title": {
+            "en": "Floor temperature",
+            "nl": "Vloertemperatuur"
+          }
+        },
+        "measure_temperature.room": {
+          "title": {
+            "en": "Room temperature",
+            "nl": "Ruimtetemperatuur"
+          }
+        },
+        "meter_power": {
+          "title": {
+            "en": "Energy total",
+            "nl": "Energie totaal"
+          }
+        }
+      },
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "cloud"
+      ],
+      "images": {
+        "small": "/drivers/owd5/assets/images/small.png",
+        "large": "/drivers/owd5/assets/images/large.png",
+        "xlarge": "/drivers/owd5/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "login",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "repair": [
+        {
+          "id": "repair_login"
+        }
+      ],
+      "id": "owd5",
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Behaviour",
+            "nl": "Gedrag"
+          },
+          "children": [
+            {
+              "id": "setpoint_behaviour",
+              "type": "dropdown",
+              "value": "comfort",
+              "label": {
+                "en": "When the temperature is changed in Homey",
+                "nl": "Als de temperatuur in Homey wordt aangepast"
+              },
+              "hint": {
+                "en": "Comfort sets a temporary temperature and then returns to the schedule. Manual holds the temperature until you change it.",
+                "nl": "Comfort stelt een tijdelijke temperatuur in en keert daarna terug naar het programma. Handmatig houdt de temperatuur vast tot je die wijzigt."
+              },
+              "values": [
+                {
+                  "id": "comfort",
+                  "label": {
+                    "en": "Comfort (temporary, then back to schedule)",
+                    "nl": "Comfort (tijdelijk, daarna terug naar programma)"
+                  }
+                },
+                {
+                  "id": "manual",
+                  "label": {
+                    "en": "Manual (permanent)",
+                    "nl": "Handmatig (permanent)"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "comfort_minutes",
+              "type": "number",
+              "value": 240,
+              "min": 15,
+              "max": 1440,
+              "step": 15,
+              "units": {
+                "en": "min"
+              },
+              "label": {
+                "en": "Comfort duration",
+                "nl": "Comfortduur"
+              }
+            },
+            {
+              "id": "load_watts",
+              "type": "number",
+              "value": 0,
+              "min": 0,
+              "max": 10000,
+              "units": {
+                "en": "W"
+              },
+              "label": {
+                "en": "Heating element power",
+                "nl": "Vermogen verwarmingselement"
+              },
+              "hint": {
+                "en": "Rated power of the heating cable or mat (see the installation label). Used to report live power usage to Homey Energy. Leave at 0 if unknown.",
+                "nl": "Nominaal vermogen van de verwarmingskabel of -mat (zie het installatielabel). Wordt gebruikt om actueel verbruik aan Homey Energie te melden. Laat op 0 als onbekend."
+              }
+            },
+            {
+              "id": "poll_interval",
+              "type": "number",
+              "value": 60,
+              "min": 30,
+              "max": 900,
+              "units": {
+                "en": "s"
+              },
+              "label": {
+                "en": "Update interval",
+                "nl": "Verversingsinterval"
+              }
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Thermostat",
+            "nl": "Thermostaat"
+          },
+          "children": [
+            {
+              "id": "zone",
+              "type": "label",
+              "value": "",
+              "label": {
+                "en": "Zone",
+                "nl": "Zone"
+              }
+            },
+            {
+              "id": "serial",
+              "type": "label",
+              "value": "",
+              "label": {
+                "en": "Serial number",
+                "nl": "Serienummer"
+              }
+            },
+            {
+              "id": "firmware",
+              "type": "label",
+              "value": "",
+              "label": {
+                "en": "Firmware",
+                "nl": "Firmware"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "capabilities": {
+    "oj_energy_today": {
+      "type": "number",
+      "title": {
+        "en": "Energy today",
+        "nl": "Energie vandaag"
+      },
+      "units": {
+        "en": "kWh"
+      },
+      "decimals": 2,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/capabilities/energy.svg",
+      "insights": true
+    },
+    "oj_heating": {
+      "type": "boolean",
+      "title": {
+        "en": "Heating",
+        "nl": "Verwarmt"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/capabilities/heating.svg",
+      "insights": true,
+      "insightsTitleTrue": {
+        "en": "Heating on",
+        "nl": "Verwarming aan"
+      },
+      "insightsTitleFalse": {
+        "en": "Heating off",
+        "nl": "Verwarming uit"
+      }
+    },
+    "oj_regulation_mode": {
+      "type": "enum",
+      "title": {
+        "en": "Mode",
+        "nl": "Modus"
+      },
+      "getable": true,
+      "setable": true,
+      "uiComponent": "picker",
+      "icon": "/assets/capabilities/mode.svg",
+      "values": [
+        {
+          "id": "schedule",
+          "title": {
+            "en": "Schedule",
+            "nl": "Programma"
+          }
+        },
+        {
+          "id": "comfort",
+          "title": {
+            "en": "Comfort (temporary)",
+            "nl": "Comfort (tijdelijk)"
+          }
+        },
+        {
+          "id": "manual",
+          "title": {
+            "en": "Manual",
+            "nl": "Handmatig"
+          }
+        },
+        {
+          "id": "boost",
+          "title": {
+            "en": "Boost (1 hour)",
+            "nl": "Boost (1 uur)"
+          }
+        },
+        {
+          "id": "eco",
+          "title": {
+            "en": "Eco",
+            "nl": "Eco"
+          }
+        },
+        {
+          "id": "frost_protection",
+          "title": {
+            "en": "Frost protection",
+            "nl": "Vorstbeveiliging"
+          }
+        },
+        {
+          "id": "vacation",
+          "title": {
+            "en": "Vacation",
+            "nl": "Vakantie"
+          }
+        }
+      ]
+    }
+  }
+}

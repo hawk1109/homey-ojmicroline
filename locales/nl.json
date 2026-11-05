@@ -1,0 +1,34 @@
+{
+  "pair": {
+    "title": "Koppel je OJ-account",
+    "intro": "Log in met hetzelfde account dat je in de app van de thermostaat gebruikt. Alle WiFi-thermostaten op het account worden gevonden.",
+    "app": "App die je gebruikt",
+    "app_ojmicroline": "OJ Microline (OWD5-app)",
+    "app_swatt": "SWATT",
+    "app_schluter": "Schlüter HEAT CONTROL",
+    "app_microtemp": "Microtemp",
+    "username": "Gebruikersnaam",
+    "password": "Wachtwoord",
+    "connect": "Verbinden",
+    "connecting": "Verbinden…",
+    "error_required": "Vul je gebruikersnaam en wachtwoord in.",
+    "hint": "Je thermostaat moet al aan dit account gekoppeld zijn in de app en verbonden zijn met WiFi.",
+    "not_logged_in": "Log eerst in."
+  },
+  "device": {
+    "offline": "Thermostaat is offline (geen WiFi-verbinding met de OJ-cloud)",
+    "auth_failed": "Inloggen bij de OJ-cloud mislukt. Gebruik Repareren om je gegevens opnieuw in te voeren.",
+    "no_credentials": "Geen account gekoppeld. Gebruik Repareren om in te loggen.",
+    "no_data": "Nog geen gegevens van de thermostaat ontvangen. Probeer het over een minuut opnieuw.",
+    "vacation_readonly": "Vakantiemodus kan alleen in de OJ-app of op de thermostaat worden ingepland."
+  },
+  "mode": {
+    "schedule": "Programma",
+    "comfort": "Comfort",
+    "manual": "Handmatig",
+    "vacation": "Vakantie",
+    "frost_protection": "Vorstbeveiliging",
+    "boost": "Boost",
+    "eco": "Eco"
+  }
+}
