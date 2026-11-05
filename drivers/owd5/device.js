@@ -105,6 +105,9 @@ class OWD5Device extends Homey.Device {
       adaptive: this.homey.__(t.AdaptiveMode ? 'onoff.on' : 'onoff.off'),
       open_window: this.homey.__(t.OpenWindow ? 'onoff.on' : 'onoff.off'),
     };
+    const sent = this.getStoreValue('last_sent_mode');
+    diag.raw_mode = `${t.RegulationMode} / ${t.LastPrimaryModeIsAuto ? 'auto' : 'manual'}`
+      + (sent ? ` / sent ${sent.mode} @ ${new Date(sent.at).toLocaleTimeString('nl-NL', { timeZone: this.homey.clock.getTimezone() })}` : '');
     for (const [k, v] of Object.entries(diag)) if (this.getSetting(k) !== v) settings[k] = v;
     if (Object.keys(settings).length) await this.setSettings(settings).catch(this.error);
 
@@ -231,7 +234,9 @@ class OWD5Device extends Homey.Device {
     if (mode === MODE.VACATION) throw new Error(this.homey.__('device.vacation_readonly'));
 
     const durationMinutes = opts.durationMinutes ?? (Number(this.getSetting('comfort_minutes')) || 240);
+    this.log(`Sending mode ${modeId} (${mode})`, opts.temperature != null ? `temp ${opts.temperature}` : '', `current raw ${this.raw.RegulationMode}`);
     await this.account.client.setRegulationMode(this.raw, mode, { ...opts, durationMinutes });
+    await this.setStoreValue('last_sent_mode', { mode, at: Date.now() }).catch(this.error);
 
     // Optimistic UI update, then confirm from the cloud.
     await this._set('oj_regulation_mode', modeId);

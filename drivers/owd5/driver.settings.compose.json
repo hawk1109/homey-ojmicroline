@@ -92,6 +92,19 @@
     },
     "children": [
       {
+        "id": "raw_mode",
+        "type": "label",
+        "value": "",
+        "label": {
+          "en": "Mode code (diagnostic)",
+          "nl": "Moduscode (diagnose)"
+        },
+        "hint": {
+          "en": "Raw values reported by the OJ cloud: RegulationMode / return-to mode / last mode sent by Homey.",
+          "nl": "Ruwe waarden van de OJ-cloud: RegulationMode / terugkeermodus / laatste modus verstuurd door Homey."
+        }
+      },
+      {
         "id": "sensor_mode",
         "type": "label",
         "value": "",

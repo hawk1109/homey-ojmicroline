@@ -18,5 +18,9 @@
   "1.2.0": {
     "en": "New Flow cards: lower the manual temperature by a percentage, restore it, and check whether it is lowered.",
     "nl": "Nieuwe Flow-kaarten: handmatige temperatuur verlagen met een percentage, herstellen, en controleren of deze verlaagd is."
+  },
+  "1.2.1": {
+    "en": "Diagnostic: raw mode code in device settings.",
+    "nl": "Diagnose: ruwe moduscode in apparaatinstellingen."
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "nl.hawk-it.ojmicroline",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Homey app for OJ Microline OWD5 / MWD5 WiFi floor-heating thermostats",
   "main": "app.js",
   "license": "MIT",
