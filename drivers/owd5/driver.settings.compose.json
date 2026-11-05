@@ -1,20 +1,38 @@
 [
   {
     "type": "group",
-    "label": { "en": "Behaviour", "nl": "Gedrag" },
+    "label": {
+      "en": "Behaviour",
+      "nl": "Gedrag"
+    },
     "children": [
       {
         "id": "setpoint_behaviour",
         "type": "dropdown",
         "value": "comfort",
-        "label": { "en": "When the temperature is changed in Homey", "nl": "Als de temperatuur in Homey wordt aangepast" },
+        "label": {
+          "en": "When the temperature is changed in Homey",
+          "nl": "Als de temperatuur in Homey wordt aangepast"
+        },
         "hint": {
           "en": "Comfort sets a temporary temperature and then returns to the schedule. Manual holds the temperature until you change it.",
           "nl": "Comfort stelt een tijdelijke temperatuur in en keert daarna terug naar het programma. Handmatig houdt de temperatuur vast tot je die wijzigt."
         },
         "values": [
-          { "id": "comfort", "label": { "en": "Comfort (temporary, then back to schedule)", "nl": "Comfort (tijdelijk, daarna terug naar programma)" } },
-          { "id": "manual", "label": { "en": "Manual (permanent)", "nl": "Handmatig (permanent)" } }
+          {
+            "id": "comfort",
+            "label": {
+              "en": "Comfort (temporary, then back to schedule)",
+              "nl": "Comfort (tijdelijk, daarna terug naar programma)"
+            }
+          },
+          {
+            "id": "manual",
+            "label": {
+              "en": "Manual (permanent)",
+              "nl": "Handmatig (permanent)"
+            }
+          }
         ]
       },
       {
@@ -24,8 +42,13 @@
         "min": 15,
         "max": 1440,
         "step": 15,
-        "units": { "en": "min" },
-        "label": { "en": "Comfort duration", "nl": "Comfortduur" }
+        "units": {
+          "en": "min"
+        },
+        "label": {
+          "en": "Comfort duration",
+          "nl": "Comfortduur"
+        }
       },
       {
         "id": "load_watts",
@@ -33,8 +56,13 @@
         "value": 0,
         "min": 0,
         "max": 10000,
-        "units": { "en": "W" },
-        "label": { "en": "Heating element power", "nl": "Vermogen verwarmingselement" },
+        "units": {
+          "en": "W"
+        },
+        "label": {
+          "en": "Heating element power",
+          "nl": "Vermogen verwarmingselement"
+        },
         "hint": {
           "en": "Rated power of the heating cable or mat (see the installation label). Used to report live power usage to Homey Energy. Leave at 0 if unknown.",
           "nl": "Nominaal vermogen van de verwarmingskabel of -mat (zie het installatielabel). Wordt gebruikt om actueel verbruik aan Homey Energie te melden. Laat op 0 als onbekend."
@@ -46,18 +74,81 @@
         "value": 60,
         "min": 30,
         "max": 900,
-        "units": { "en": "s" },
-        "label": { "en": "Update interval", "nl": "Verversingsinterval" }
+        "units": {
+          "en": "s"
+        },
+        "label": {
+          "en": "Update interval",
+          "nl": "Verversingsinterval"
+        }
       }
     ]
   },
   {
     "type": "group",
-    "label": { "en": "Thermostat", "nl": "Thermostaat" },
+    "label": {
+      "en": "Thermostat",
+      "nl": "Thermostaat"
+    },
     "children": [
-      { "id": "zone", "type": "label", "value": "", "label": { "en": "Zone", "nl": "Zone" } },
-      { "id": "serial", "type": "label", "value": "", "label": { "en": "Serial number", "nl": "Serienummer" } },
-      { "id": "firmware", "type": "label", "value": "", "label": { "en": "Firmware", "nl": "Firmware" } }
+      {
+        "id": "sensor_mode",
+        "type": "label",
+        "value": "",
+        "label": {
+          "en": "Regulates on",
+          "nl": "Regelt op"
+        },
+        "hint": {
+          "en": "Which sensor the thermostat uses to control the heating. Change it on the thermostat (installer settings).",
+          "nl": "Welke sensor de thermostaat gebruikt om de verwarming te regelen. Wijzigen kan op de thermostaat (installateursinstellingen)."
+        }
+      },
+      {
+        "id": "adaptive",
+        "type": "label",
+        "value": "",
+        "label": {
+          "en": "Adaptive function (pre-heating)",
+          "nl": "Adaptieve functie (voorverwarmen)"
+        }
+      },
+      {
+        "id": "open_window",
+        "type": "label",
+        "value": "",
+        "label": {
+          "en": "Open window detection",
+          "nl": "Open-raamdetectie"
+        }
+      },
+      {
+        "id": "zone",
+        "type": "label",
+        "value": "",
+        "label": {
+          "en": "Zone",
+          "nl": "Zone"
+        }
+      },
+      {
+        "id": "serial",
+        "type": "label",
+        "value": "",
+        "label": {
+          "en": "Serial number",
+          "nl": "Serienummer"
+        }
+      },
+      {
+        "id": "firmware",
+        "type": "label",
+        "value": "",
+        "label": {
+          "en": "Firmware",
+          "nl": "Firmware"
+        }
+      }
     ]
   }
 ]

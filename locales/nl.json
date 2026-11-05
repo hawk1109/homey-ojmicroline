@@ -47,5 +47,15 @@
     "h": "u",
     "m": "m",
     "idle": "Uit"
+  },
+  "sensor": {
+    "floor": "Vloersensor",
+    "room": "Ruimtesensor",
+    "room_floor": "Ruimtesensor, begrensd door vloer",
+    "unknown": "Onbekend"
+  },
+  "onoff": {
+    "on": "Aan",
+    "off": "Uit"
   }
 }

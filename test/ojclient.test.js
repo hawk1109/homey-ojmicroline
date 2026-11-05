@@ -57,7 +57,7 @@ test('current temperature honours sensor application', () => {
   const t = thermostat(); // room 1820, floor 1968
   t.SensorAppl = 3; assert.equal(currentTemperature(t), 19.68);
   t.SensorAppl = 4; assert.equal(currentTemperature(t), 18.2);
-  t.SensorAppl = 1; assert.equal(currentTemperature(t), 18.94);
+  t.SensorAppl = 1; assert.equal(currentTemperature(t), 18.2);
 });
 
 // ------------------------------------------------------------- HTTP flow

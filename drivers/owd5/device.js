@@ -99,6 +99,13 @@ class OWD5Device extends Homey.Device {
     const settings = {};
     if (this.getSetting('zone') !== t.GroupName) settings.zone = t.GroupName || '';
     if (this.getSetting('firmware') !== t.SWversion) settings.firmware = t.SWversion || '';
+    const sensorKey = { 1: 'room_floor', 3: 'floor', 4: 'room' }[t.SensorAppl] || 'unknown';
+    const diag = {
+      sensor_mode: this.homey.__(`sensor.${sensorKey}`),
+      adaptive: this.homey.__(t.AdaptiveMode ? 'onoff.on' : 'onoff.off'),
+      open_window: this.homey.__(t.OpenWindow ? 'onoff.on' : 'onoff.off'),
+    };
+    for (const [k, v] of Object.entries(diag)) if (this.getSetting(k) !== v) settings[k] = v;
     if (Object.keys(settings).length) await this.setSettings(settings).catch(this.error);
 
     if (prev) this._fireTriggers(prev, t, modeId);

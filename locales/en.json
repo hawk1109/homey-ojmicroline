@@ -47,5 +47,15 @@
     "h": "h",
     "m": "m",
     "idle": "Idle"
+  },
+  "sensor": {
+    "floor": "Floor sensor",
+    "room": "Room sensor",
+    "room_floor": "Room sensor, floor limited",
+    "unknown": "Unknown"
+  },
+  "onoff": {
+    "on": "On",
+    "off": "Off"
   }
 }
