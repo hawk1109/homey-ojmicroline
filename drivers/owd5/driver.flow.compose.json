@@ -32,6 +32,18 @@
             "en": "Schedule",
             "nl": "Programma"
           }
+        },
+        {
+          "name": "previous_mode",
+          "type": "string",
+          "title": {
+            "en": "Previous mode",
+            "nl": "Vorige modus"
+          },
+          "example": {
+            "en": "Manual",
+            "nl": "Handmatig"
+          }
         }
       ]
     }

@@ -147,3 +147,24 @@ test('comfort update sends temperature, local end time and preserves vacation da
     assert.ok(Math.abs(endUtc - (before + 3600e3)) < 5000);
   } finally { m.restore(); }
 });
+
+test('temporary modes keep the primary mode the thermostat returns to', async () => {
+  const m = mockFetch((p) => (p.endsWith('/SignIn')
+    ? { json: { ErrorCode: 0, SessionId: 'S' } }
+    : { json: { ErrorCode: 0 } }));
+  try {
+    const c = new OJClient({ username: 'u', password: 'p' });
+    const sent = async (t, mode) => { await c.setRegulationMode(t, mode, { temperature: 21 }); return m.calls.at(-1).body.SetGroup.LastPrimaryModeIsAuto; };
+
+    // In Comfort that came from Schedule: changing comfort temp must keep "return to schedule"
+    let t = thermostat(); t.RegulationMode = MODE.COMFORT; t.LastPrimaryModeIsAuto = true;
+    assert.equal(await sent(t, MODE.COMFORT), true);
+    // From Manual, Boost must return to Manual
+    t = thermostat(); t.RegulationMode = MODE.MANUAL; t.LastPrimaryModeIsAuto = false;
+    assert.equal(await sent(t, MODE.BOOST), false);
+    // Explicit switches set it
+    assert.equal(await sent(t, MODE.SCHEDULE), true);
+    t.LastPrimaryModeIsAuto = true;
+    assert.equal(await sent(t, MODE.MANUAL), false);
+  } finally { m.restore(); }
+});

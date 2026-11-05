@@ -10,5 +10,9 @@
   "1.1.1": {
     "en": "Device settings now show which sensor the thermostat regulates on, the adaptive function and open-window detection. Room+floor mode now reports the room temperature.",
     "nl": "Apparaatinstellingen tonen nu op welke sensor de thermostaat regelt, de adaptieve functie en open-raamdetectie. Ruimte+vloer-modus toont nu de ruimtetemperatuur."
+  },
+  "1.1.2": {
+    "en": "Fix: after a temporary mode ends the thermostat now returns to the right mode (Schedule or Manual). Mode changed trigger has a Previous mode token.",
+    "nl": "Fix: na een tijdelijke modus keert de thermostaat nu terug naar de juiste modus (Programma of Handmatig). Trigger Modus is veranderd heeft een token Vorige modus."
   }
 }

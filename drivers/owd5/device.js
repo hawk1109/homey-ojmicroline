@@ -159,7 +159,11 @@ class OWD5Device extends Homey.Device {
     if (!prev.Heating && t.Heating) drv.heatingStarted.trigger(this, {}, {}).catch(this.error);
     if (prev.Heating && !t.Heating) drv.heatingStopped.trigger(this, {}, {}).catch(this.error);
     if (prev.RegulationMode !== t.RegulationMode) {
-      drv.modeChanged.trigger(this, { mode: this.homey.__(`mode.${modeId}`) }, {}).catch(this.error);
+      const prevId = MODE_IDS[prev.RegulationMode] || 'schedule';
+      drv.modeChanged.trigger(this, {
+        mode: this.homey.__(`mode.${modeId}`),
+        previous_mode: this.homey.__(`mode.${prevId}`),
+      }, {}).catch(this.error);
     }
   }
 
