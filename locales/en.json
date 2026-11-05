@@ -30,5 +30,22 @@
     "frost_protection": "Frost protection",
     "boost": "Boost",
     "eco": "Eco"
+  },
+  "widget": {
+    "heating_of": "__n__ of __total__ heating",
+    "zones_heating": "zones heating",
+    "today": "today",
+    "today_short": "Today",
+    "now": "now",
+    "last_24h": "Last 24 hours",
+    "last_7d": "Last 7 days",
+    "collecting": "collecting since install",
+    "no_energy": "Energy history appears after the first update.",
+    "empty": "No OJ Microline thermostats yet. Add one first.",
+    "offline": "Offline",
+    "heating": "Heating",
+    "h": "h",
+    "m": "m",
+    "idle": "Idle"
   }
 }

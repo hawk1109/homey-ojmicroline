@@ -1,0 +1,10 @@
+{
+  "1.0.0": {
+    "en": "First release: OWD5/MWD5 thermostats, modes, energy and flows.",
+    "nl": "Eerste versie: OWD5/MWD5-thermostaten, modi, energie en flows."
+  },
+  "1.1.0": {
+    "en": "New dashboard widget: live power, 24-hour heating timeline and 7-day energy per thermostat.",
+    "nl": "Nieuwe dashboardwidget: actueel vermogen, verwarmingstijdlijn van 24 uur en energie per thermostaat over 7 dagen."
+  }
+}

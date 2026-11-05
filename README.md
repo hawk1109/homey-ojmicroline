@@ -15,6 +15,18 @@ Also covers white-label variants on the same backend: SWATT, Schlüter DITRA-HEA
 | `measure_power` | `heating ? load_watts : 0` (set the element wattage in device settings) |
 | `oj_energy_today` / `meter_power` | daily kWh from the cloud; `meter_power` is made cumulative by carrying yesterday's final value into a persisted base at day rollover |
 
+### Dashboard widget — *Floor heating energy*
+
+Add it from a Homey dashboard (widget picker → OJ Microline). Shows:
+
+- live power across all selected thermostats (needs *Heating element power* set per device), or zones heating if no wattage is set
+- today's kWh, optionally with cost (widget setting *Price per kWh*)
+- a 24-hour heating timeline per thermostat with total on-time
+- last 7 days of energy as stacked bars per thermostat (tap a bar for the breakdown)
+- per thermostat: mode, temperature → target, today's kWh, heating state
+
+Pick specific thermostats in the widget's *Devices* setting, or leave it empty for all. Updates are pushed on every poll (realtime event `oj:update`) with a 60 s fallback refresh. The timeline fills from install time onward.
+
 Flow cards: heating on/off, mode changed · is heating, mode is · resume schedule, temporary temperature for N minutes, hold temperature, boost 1 h, set mode.
 
 Setting a temperature from Homey defaults to **Comfort** (temporary override, then back to schedule); switch to **Manual** per device in settings.
@@ -26,7 +38,8 @@ app.js                    Account registry: one OJClient + poller per (app, user
 lib/OJClient.js           WD5 cloud API: SignIn → GroupContents / GetEnergyUsage / UpdateGroup
 lib/Account.js            single GroupContents poll per interval, fans out to devices; energy every 15 min
 drivers/owd5/driver.js    pairing (custom login view → list_devices), repair, flow card wiring
-drivers/owd5/device.js    capability mapping, setpoint/mode control, triggers
+drivers/owd5/device.js    capability mapping, setpoint/mode control, triggers, 24h heating log
+widgets/energy/           dashboard widget (public/index.html, api.js → app.getWidgetData)
 ```
 
 - Session id is reused for up to 300 calls; HTTP 401 or `ErrorCode 1` triggers one re-login.

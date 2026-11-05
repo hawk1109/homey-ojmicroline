@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    /* Categorical series slots (validated palette, fixed order) */
+    --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
+    --s5: #e87ba4; --s6: #008300; --s7: #6250d6; --s8: #e34948;
+    --track: rgba(0, 0, 0, .06);
+    --grid: rgba(0, 0, 0, .08);
+    --tip-bg: #1f1f1e; --tip-fg: #fff;
+    --heat: #eb6834;
+  }
+  .homey-dark-mode {
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+    --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
+    --track: rgba(255, 255, 255, .08);
+    --grid: rgba(255, 255, 255, .10);
+    --tip-bg: #f0efec; --tip-fg: #111;
+    --heat: #ff8a4c;
+  }
+
+  html, body { margin: 0; padding: 0; background: transparent; }
+  #root { position: relative; }
+  .muted { color: var(--homey-text-color-light); }
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* Hero */
+  .hero { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--homey-su-3); }
+  .hero-value {
+    font-size: var(--homey-font-size-xxlarge); line-height: var(--homey-line-height-xxlarge);
+    font-weight: var(--homey-font-weight-bold); letter-spacing: -.5px;
+  }
+  .hero-unit { font-size: var(--homey-font-size-large); font-weight: var(--homey-font-weight-medium); margin-left: 2px; }
+  .hero-sub { font-size: var(--homey-font-size-small); line-height: var(--homey-line-height-small); }
+  .hero-side { text-align: right; }
+  .hero-side .big { font-size: var(--homey-font-size-large); line-height: var(--homey-line-height-large); font-weight: var(--homey-font-weight-medium); }
+
+  .flame { display: inline-block; width: 14px; height: 14px; vertical-align: -2px; }
+  .flame path { fill: var(--heat); }
+  .heating .flame { animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1);} 50% { opacity: .55; transform: scale(.88);} }
+  @media (prefers-reduced-motion: reduce) { .heating .flame { animation: none; } }
+
+  /* Sections */
+  .section { margin-top: var(--homey-su-5); }
+  .section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--homey-su-2); }
+  .section-title { font-size: var(--homey-font-size-small); line-height: var(--homey-line-height-small); font-weight: var(--homey-font-weight-medium); }
+
+  /* Timeline */
+  .tl-row { display: grid; grid-template-columns: minmax(0, 88px) 1fr auto; align-items: center; gap: var(--homey-su-2); height: 22px; }
+  .tl-name { font-size: 13px; line-height: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
+  .chip { flex: 0 0 8px; width: 8px; height: 8px; border-radius: 2px; }
+  .tl-track { position: relative; height: 10px; border-radius: 4px; background: var(--track); overflow: hidden; }
+  .tl-seg { position: absolute; top: 0; bottom: 0; border-radius: 4px; }
+  .tl-total { font-size: 12px; line-height: 16px; min-width: 42px; text-align: right; }
+  .tl-axis { position: relative; height: 16px; margin-left: calc(88px + var(--homey-su-2)); margin-right: calc(42px + var(--homey-su-2)); }
+  .tl-tick { position: absolute; top: 2px; transform: translateX(-50%); font-size: 11px; line-height: 14px; white-space: nowrap; }
+  .tl-tick:last-child { transform: translateX(-100%); }
+
+  /* Week chart */
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; line-height: 16px; }
+  .legend span { display: inline-flex; align-items: center; gap: 5px; }
+  svg.week { display: block; width: 100%; overflow: visible; }
+  svg.week .grid { stroke: var(--grid); stroke-width: 1; }
+  svg.week text { font-size: 11px; fill: var(--homey-text-color-light); }
+  svg.week text.today { fill: var(--homey-text-color); font-weight: 500; }
+  svg.week .hit { fill: transparent; cursor: pointer; }
+
+  /* Thermostat list */
+  .list { margin-top: var(--homey-su-4); }
+  .row { display: grid; grid-template-columns: 1fr auto; gap: var(--homey-su-3); align-items: center; padding: 8px 0; }
+  .row + .row { border-top: 1px solid var(--grid); }
+  .row-name { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .row-name b { font-weight: var(--homey-font-weight-medium); font-size: 15px; line-height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row-meta { font-size: 12px; line-height: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row-temp { font-size: 14px; line-height: 20px; text-align: right; white-space: nowrap; }
+  .row-kwh { font-size: 15px; line-height: 20px; text-align: right; white-space: nowrap; }
+  .offline { opacity: .45; }
+
+  /* Tooltip */
+  .tip {
+    position: absolute; pointer-events: none; z-index: 10; opacity: 0; transition: opacity .12s;
+    background: var(--tip-bg); color: var(--tip-fg); border-radius: 8px; padding: 6px 8px;
+    font-size: 12px; line-height: 16px; white-space: nowrap; transform: translate(-50%, calc(-100% - 8px));
+  }
+  .tip.show { opacity: 1; }
+  .tip .t-row { display: flex; align-items: center; gap: 6px; }
+  .tip .t-row b { margin-left: auto; padding-left: 10px; font-weight: 600; }
+
+  .empty { padding: var(--homey-su-6) 0; text-align: center; font-size: var(--homey-font-size-small); }
+</style>
+</head>
+<body class="homey-widget">
+<div id="root"></div>
+<div class="tip" id="tip"></div>
+
+<script type="text/javascript">
+  var FLAME = '<svg class="flame" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c.6 3.2 2.6 4.9 4.3 6.8C18 10.7 19 12.6 19 15a7 7 0 0 1-14 0c0-2.1.8-3.8 2.1-5.2.3 1.5 1.1 2.6 2.4 3.2C9 9.3 10.1 5.5 12 2z"/></svg>';
+  var DAY = 24 * 3600 * 1000;
+
+  function onHomeyReady(Homey) {
+    var root = document.getElementById('root');
+    var tip = document.getElementById('tip');
+    var settings = Homey.getSettings() || {};
+    var price = Number(settings.price) || 0;
+    var showTimeline = settings.show_timeline !== false;
+    var showWeek = settings.show_week !== false;
+    var data = null;
+    var readyCalled = false;
+    var tr = function (k, t) { return Homey.__('widget.' + k, t); };
+
+    function ids() {
+      try { return (Homey.getDeviceIds && Homey.getDeviceIds()) || []; } catch (e) { return []; }
+    }
+
+    function load() {
+      var q = ids();
+      return Homey.api('GET', '/' + (q.length ? '?ids=' + encodeURIComponent(q.join(',')) : ''))
+        .then(function (d) { data = d; render(); })
+        .catch(function (e) {
+          root.innerHTML = '<div class="empty muted">' + esc(e && e.message ? e.message : String(e)) + '</div>';
+          done();
+        });
+    }
+
+    // ------------------------------------------------------------ formatting
+    function nf(v, dec) {
+      return new Intl.NumberFormat(data.language || undefined, { minimumFractionDigits: dec, maximumFractionDigits: dec }).format(v);
+    }
+    function money(v) {
+      return new Intl.NumberFormat(data.language || undefined, { style: 'currency', currency: 'EUR' }).format(v);
+    }
+    function hhmm(ms) {
+      return new Intl.DateTimeFormat(data.language || undefined, { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: data.timezone }).format(ms);
+    }
+    function localHour(ms) {
+      return Number(new Intl.DateTimeFormat('en-GB', { hour: '2-digit', hourCycle: 'h23', timeZone: data.timezone }).format(ms));
+    }
+    function weekday(ms) {
+      return new Intl.DateTimeFormat(data.language || undefined, { weekday: 'short', timeZone: data.timezone }).format(ms).replace('.', '');
+    }
+    function duration(ms) {
+      var m = Math.round(ms / 60000), h = Math.floor(m / 60);
+      return h ? h + tr('h') + (m % 60 ? ' ' + (m % 60) + tr('m') : '') : m + tr('m');
+    }
+    function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+    function color(i) { return 'var(--s' + ((i % 8) + 1) + ')'; }
+
+    // --------------------------------------------------------------- render
+    function render() {
+      var list = data.thermostats || [];
+      if (!list.length) {
+        root.innerHTML = '<div class="empty muted">' + esc(tr('empty')) + '</div>';
+        return done();
+      }
+      // Color follows the entity: index in name-sorted full list.
+      list.forEach(function (t, i) { t.color = color(i); });
+
+      root.innerHTML = hero(list)
+        + (showTimeline ? timeline(list) : '')
+        + (showWeek ? week(list) : '')
+        + rows(list);
+      bindTips();
+      done();
+    }
+
+    function hero(list) {
+      var heating = list.filter(function (t) { return t.heating; }).length;
+      var withLoad = list.filter(function (t) { return t.loadWatts > 0; });
+      var power = withLoad.reduce(function (s, t) { return s + (t.heating ? t.loadWatts : 0); }, 0);
+      var today = list.reduce(function (s, t) { return s + (t.todayKWh || 0); }, 0);
+
+      var value = withLoad.length
+        ? (power >= 1000 ? nf(power / 1000, 2) + '<span class="hero-unit">kW</span>' : nf(power, 0) + '<span class="hero-unit">W</span>')
+        : heating + '<span class="hero-unit">/ ' + list.length + '</span>';
+
+      var sub = withLoad.length
+        ? tr('heating_of', { n: heating, total: list.length })
+        : tr('zones_heating');
+
+      return '<div class="hero">'
+        + '<div class="' + (heating ? 'heating' : '') + '">'
+        +   '<div class="hero-value num">' + value + '</div>'
+        +   '<div class="hero-sub muted">' + (heating ? FLAME + ' ' : '') + esc(sub) + '</div>'
+        + '</div>'
+        + '<div class="hero-side">'
+        +   '<div class="big num">' + nf(today, 1) + ' kWh</div>'
+        +   '<div class="hero-sub muted">' + esc(tr('today')) + (price ? ' · ' + money(today * price) : '') + '</div>'
+        + '</div>'
+        + '</div>';
+    }
+
+    function onTime(log, from, to) {
+      // log: [[ts, 0|1], ...] sorted; returns [{a, b}] on-segments clipped to [from, to]
+      var segs = [];
+      for (var i = 0; i < log.length; i++) {
+        if (log[i][1] !== 1) continue;
+        var a = Math.max(log[i][0], from);
+        var b = Math.min(i + 1 < log.length ? log[i + 1][0] : to, to);
+        if (b > a) segs.push({ a: a, b: b });
+      }
+      return segs;
+    }
+
+    function timeline(list) {
+      var to = data.now, from = to - DAY;
+      var rowsHtml = list.map(function (t) {
+        var segs = onTime(t.heatLog || [], from, to);
+        var total = segs.reduce(function (s, x) { return s + (x.b - x.a); }, 0);
+        var bars = segs.map(function (s) {
+          var l = (s.a - from) / DAY * 100, w = Math.max((s.b - s.a) / DAY * 100, .4);
+          return '<div class="tl-seg" style="left:' + l + '%;width:' + w + '%;background:' + t.color + '"'
+            + ' data-tip="' + esc(t.name) + '|' + hhmm(s.a) + ' – ' + (s.b >= to - 60000 ? tr('now') : hhmm(s.b)) + '|' + duration(s.b - s.a) + '"></div>';
+        }).join('');
+        return '<div class="tl-row' + (t.available ? '' : ' offline') + '">'
+          + '<div class="tl-name"><span class="chip" style="background:' + t.color + '"></span>' + esc(t.name) + '</div>'
+          + '<div class="tl-track">' + bars + '</div>'
+          + '<div class="tl-total muted num">' + (total ? duration(total) : '–') + '</div>'
+          + '</div>';
+      }).join('');
+
+      // Ticks at local hours divisible by 6
+      var ticks = '';
+      var start = Math.ceil(from / 3600000) * 3600000;
+      for (var ts = start; ts < to - 5 * 3600000; ts += 3600000) {
+        if (localHour(ts) % 6 === 0) ticks += '<span class="tl-tick muted" style="left:' + ((ts - from) / DAY * 100) + '%">' + hhmm(ts) + '</span>';
+      }
+      ticks += '<span class="tl-tick muted" style="left:100%">' + esc(tr('now')) + '</span>';
+
+      var anyLog = list.some(function (t) { return (t.heatLog || []).length; });
+      return '<div class="section">'
+        + '<div class="section-head"><span class="section-title">' + esc(tr('last_24h')) + '</span>'
+        + (anyLog ? '' : '<span class="hero-sub muted">' + esc(tr('collecting')) + '</span>') + '</div>'
+        + rowsHtml
+        + '<div class="tl-axis">' + ticks + '</div>'
+        + '</div>';
+    }
+
+    function week(list) {
+      var days = 7;
+      var have = list.some(function (t) { return (t.weekKWh || []).length; });
+      if (!have) {
+        return '<div class="section"><div class="section-head"><span class="section-title">' + esc(tr('last_7d')) + '</span></div>'
+          + '<div class="empty muted">' + esc(tr('no_energy')) + '</div></div>';
+      }
+      // columns oldest -> today; weekKWh[0] = today
+      var cols = [];
+      for (var c = 0; c < days; c++) {
+        var back = days - 1 - c;
+        var parts = list.map(function (t) { return { t: t, v: (t.weekKWh || [])[back] || 0 }; });
+        cols.push({ back: back, ts: data.now - back * DAY, parts: parts, sum: parts.reduce(function (s, p) { return s + p.v; }, 0) });
+      }
+      var max = Math.max.apply(null, cols.map(function (c) { return c.sum; })) || 1;
+      var nice = niceMax(max);
+
+      var W = 320, H = 132, top = 16, bottom = 20, plotH = H - top - bottom, gap = 10;
+      var bw = (W - gap * (days - 1)) / days;
+      var y = function (v) { return top + plotH - v / nice * plotH; };
+
+      var svg = '<svg class="week" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(tr('last_7d')) + '">';
+      [0.5, 1].forEach(function (f) {
+        svg += '<line class="grid" x1="0" x2="' + W + '" y1="' + y(nice * f) + '" y2="' + y(nice * f) + '"/>';
+      });
+      svg += '<text x="0" y="' + (y(nice) - 4) + '" text-anchor="start">' + nf(nice, nice < 10 ? 1 : 0) + ' kWh</text>';
+
+      cols.forEach(function (col, i) {
+        var x = i * (bw + gap), acc = 0;
+        var visible = col.parts.filter(function (p) { return p.v > 0; });
+        visible.forEach(function (p, j) {
+          var y0 = y(acc), y1 = y(acc + p.v);
+          var h = Math.max(y0 - y1 - (j < visible.length - 1 ? 2 : 0), 1); // 2px surface gap between stacked segments
+          var isTop = j === visible.length - 1;
+          svg += isTop ? roundedTop(x, y1, bw, h, Math.min(4, h), p.t.color) : '<rect x="' + x + '" y="' + (y0 - h) + '" width="' + bw + '" height="' + h + '" fill="' + p.t.color + '"/>';
+          acc += p.v;
+        });
+        var isToday = col.back === 0;
+        svg += '<text x="' + (x + bw / 2) + '" y="' + (H - 4) + '" text-anchor="middle"' + (isToday ? ' class="today"' : '') + '>'
+          + esc(isToday ? tr('today_short') : weekday(col.ts)) + '</text>';
+        if (isToday && col.sum > 0) {
+          svg += '<text x="' + (x + bw / 2) + '" y="' + (y(col.sum) - 4) + '" text-anchor="middle" class="today">' + nf(col.sum, 1) + '</text>';
+        }
+        var tipRows = col.parts.slice().reverse().map(function (p) { return p.t.name + '~' + p.t.color + '~' + nf(p.v, 2) + ' kWh'; }).join('^');
+        var head = (isToday ? tr('today') : weekday(col.ts)) + '~' + nf(col.sum, 2) + ' kWh' + (price ? ' · ' + money(col.sum * price) : '');
+        svg += '<rect class="hit" x="' + (x - gap / 2) + '" y="0" width="' + (bw + gap) + '" height="' + H + '" data-week="' + esc(head + '^' + tipRows) + '"/>';
+      });
+      svg += '</svg>';
+
+      var legend = list.length > 1
+        ? '<div class="legend muted">' + list.map(function (t) { return '<span><span class="chip" style="background:' + t.color + '"></span>' + esc(t.name) + '</span>'; }).join('') + '</div>'
+        : '';
+      var weekTotal = cols.reduce(function (s, c) { return s + c.sum; }, 0);
+
+      return '<div class="section">'
+        + '<div class="section-head"><span class="section-title">' + esc(tr('last_7d')) + '</span>'
+        + '<span class="hero-sub muted num">' + nf(weekTotal, 1) + ' kWh' + (price ? ' · ' + money(weekTotal * price) : '') + '</span></div>'
+        + svg + legend + '</div>';
+    }
+
+    function roundedTop(x, y, w, h, r, fill) {
+      return '<path fill="' + fill + '" d="M' + x + ',' + (y + h) + 'V' + (y + r) + 'Q' + x + ',' + y + ' ' + (x + r) + ',' + y
+        + 'H' + (x + w - r) + 'Q' + (x + w) + ',' + y + ' ' + (x + w) + ',' + (y + r) + 'V' + (y + h) + 'Z"/>';
+    }
+
+    function niceMax(v) {
+      var p = Math.pow(10, Math.floor(Math.log10(v))), n = v / p;
+      var m = n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10;
+      return m * p;
+    }
+
+    function rows(list) {
+      return '<div class="list">' + list.map(function (t) {
+        var temp = t.temperature != null ? nf(t.temperature, 1) + '°' : '–';
+        var target = t.target != null ? ' → ' + nf(t.target, 1) + '°' : '';
+        var meta = !t.available ? esc(tr('offline'))
+          : esc(t.modeLabel) + ' · <span class="num">' + temp + target + '</span>';
+        var status = !t.available ? '' : t.heating ? FLAME + ' ' + esc(tr('heating')) : esc(tr('idle'));
+        return '<div class="row' + (t.available ? '' : ' offline') + (t.heating ? ' heating' : '') + '">'
+          + '<div class="row-name"><span class="chip" style="background:' + t.color + '"></span>'
+          +   '<div style="min-width:0"><b>' + esc(t.name) + '</b><div class="row-meta muted">' + meta + '</div></div></div>'
+          + '<div class="row-kwh"><div class="num">' + (t.todayKWh != null ? nf(t.todayKWh, 1) + ' kWh' : '–') + '</div>'
+          +   '<div class="row-meta muted">' + status + '</div></div>'
+          + '</div>';
+      }).join('') + '</div>';
+    }
+
+    // ------------------------------------------------------------- tooltips
+    function bindTips() {
+      root.querySelectorAll('[data-tip],[data-week]').forEach(function (el) {
+        var show = function (ev) {
+          var html;
+          if (el.dataset.week) {
+            var rowsArr = el.dataset.week.split('^');
+            var head = rowsArr.shift().split('~');
+            html = '<div class="t-row"><span>' + esc(head[0]) + '</span><b>' + esc(head[1]) + '</b></div>'
+              + rowsArr.map(function (r) {
+                var p = r.split('~');
+                return '<div class="t-row"><span class="chip" style="background:' + p[1] + '"></span><span>' + esc(p[0]) + '</span><b>' + esc(p[2]) + '</b></div>';
+              }).join('');
+          } else {
+            var p = el.dataset.tip.split('|');
+            html = '<div class="t-row"><span>' + esc(p[0]) + '</span></div><div class="t-row"><span>' + esc(p[1]) + '</span><b>' + esc(p[2]) + '</b></div>';
+          }
+          tip.innerHTML = html;
+          var r = el.getBoundingClientRect(), rr = document.body.getBoundingClientRect();
+          var x = r.left + r.width / 2 - rr.left;
+          var w = tip.offsetWidth || 140;
+          x = Math.max(w / 2 + 4, Math.min(rr.width - w / 2 - 4, x));
+          tip.style.left = x + 'px';
+          tip.style.top = (r.top - rr.top) + 'px';
+          tip.classList.add('show');
+          try { Homey.hapticFeedback(); } catch (e) { /* only allowed right after touch */ }
+          if (ev) ev.stopPropagation();
+        };
+        el.addEventListener('mouseenter', show);
+        el.addEventListener('click', show);
+        el.addEventListener('mouseleave', hideTip);
+      });
+    }
+    function hideTip() { tip.classList.remove('show'); }
+    document.addEventListener('click', hideTip);
+
+    // ---------------------------------------------------------------- sizing
+    function done() {
+      var h = Math.ceil(root.getBoundingClientRect().height) + 32; // + .homey-widget padding
+      if (!readyCalled) { readyCalled = true; Homey.ready({ height: h }); }
+      else Homey.setHeight(h);
+    }
+
+    Homey.on('oj:update', function () { load(); });
+    setInterval(load, 60000); // fallback if realtime events are missed
+    load();
+  }
+</script>
+</body>
+</html>

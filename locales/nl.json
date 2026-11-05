@@ -30,5 +30,22 @@
     "frost_protection": "Vorstbeveiliging",
     "boost": "Boost",
     "eco": "Eco"
+  },
+  "widget": {
+    "heating_of": "__n__ van __total__ verwarmen",
+    "zones_heating": "zones verwarmen",
+    "today": "vandaag",
+    "today_short": "Vand.",
+    "now": "nu",
+    "last_24h": "Laatste 24 uur",
+    "last_7d": "Laatste 7 dagen",
+    "collecting": "verzameld sinds installatie",
+    "no_energy": "Verbruikshistorie verschijnt na de eerste update.",
+    "empty": "Nog geen OJ Microline-thermostaten. Voeg er eerst een toe.",
+    "offline": "Offline",
+    "heating": "Verwarmt",
+    "h": "u",
+    "m": "m",
+    "idle": "Uit"
   }
 }

@@ -7,6 +7,7 @@ const {
 
 const MODE_BY_ID = Object.fromEntries(Object.entries(MODE_IDS).map(([k, v]) => [v, Number(k)]));
 const REFRESH_AFTER_SET_MS = 4000;
+const HEAT_LOG_WINDOW_MS = 24 * 3600 * 1000;
 
 class OWD5Device extends Homey.Device {
   async onInit() {
@@ -101,6 +102,49 @@ class OWD5Device extends Homey.Device {
     if (Object.keys(settings).length) await this.setSettings(settings).catch(this.error);
 
     if (prev) this._fireTriggers(prev, t, modeId);
+    await this._logHeating(heating);
+    this.homey.app.notifyWidgets();
+  }
+
+  /**
+   * Keeps a compact on/off transition log covering the last 24h (+ the state
+   * at the window start) for the dashboard widget's timeline.
+   */
+  async _logHeating(heating) {
+    const log = this.getStoreValue('heat_log') || [];
+    const now = Date.now();
+    const last = log[log.length - 1];
+    if (last && last[1] === (heating ? 1 : 0)) return;
+
+    log.push([now, heating ? 1 : 0]);
+    const cutoff = now - HEAT_LOG_WINDOW_MS;
+    // Drop entries older than the window, but keep the last one before it so the state at the window start is known.
+    while (log.length > 1 && log[1][0] <= cutoff) log.shift();
+    await this.setStoreValue('heat_log', log).catch(this.error);
+  }
+
+  /** Data for the dashboard widget. */
+  getWidgetSnapshot() {
+    const t = this.raw;
+    return {
+      id: this.getId(),
+      name: this.getName(),
+      zone: this.getSetting('zone') || '',
+      available: this.getAvailable(),
+      heating: this.getCapabilityValue('oj_heating') === true,
+      mode: this.getCapabilityValue('oj_regulation_mode'),
+      modeLabel: this.homey.__(`mode.${this.getCapabilityValue('oj_regulation_mode') || 'schedule'}`),
+      temperature: this.getCapabilityValue('measure_temperature'),
+      floor: this.getCapabilityValue('measure_temperature.floor'),
+      room: this.getCapabilityValue('measure_temperature.room'),
+      target: this.getCapabilityValue('target_temperature'),
+      power: this.getCapabilityValue('measure_power'),
+      loadWatts: Number(this.getSetting('load_watts')) || 0,
+      todayKWh: this.getCapabilityValue('oj_energy_today'),
+      weekKWh: this.getStoreValue('energy_week') || [],
+      heatLog: this.getStoreValue('heat_log') || [],
+      online: t ? !!t.Online : null,
+    };
   }
 
   _fireTriggers(prev, t, modeId) {
@@ -136,6 +180,8 @@ class OWD5Device extends Homey.Device {
 
     await this._set('oj_energy_today', Math.round(usage[0] * 1000) / 1000);
     await this._set('meter_power', Math.round((base + usage[0]) * 1000) / 1000);
+    await this.setStoreValue('energy_week', usage.slice(0, 7).map((v) => Math.round(v * 1000) / 1000));
+    this.homey.app.notifyWidgets();
   }
 
   onPollError(err) {

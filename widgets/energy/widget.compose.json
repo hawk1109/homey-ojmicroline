@@ -1,0 +1,36 @@
+{
+  "name": { "en": "Floor heating energy", "nl": "Vloerverwarming energie" },
+  "height": 420,
+  "transparent": false,
+  "settings": [
+    {
+      "id": "price",
+      "type": "number",
+      "title": { "en": "Price per kWh (€)", "nl": "Prijs per kWh (€)" },
+      "hint": { "en": "Shows the cost next to energy figures. Leave at 0 to hide.", "nl": "Toont de kosten naast het verbruik. Laat op 0 om te verbergen." },
+      "value": 0,
+      "min": 0,
+      "max": 5
+    },
+    {
+      "id": "show_timeline",
+      "type": "checkbox",
+      "title": { "en": "Show 24-hour heating timeline", "nl": "Toon verwarmingstijdlijn (24 uur)" },
+      "value": true
+    },
+    {
+      "id": "show_week",
+      "type": "checkbox",
+      "title": { "en": "Show last 7 days", "nl": "Toon laatste 7 dagen" },
+      "value": true
+    }
+  ],
+  "devices": {
+    "type": "app",
+    "singular": false,
+    "filter": { "class": "thermostat" }
+  },
+  "api": {
+    "getData": { "method": "GET", "path": "/" }
+  }
+}
