@@ -239,6 +239,28 @@ class OWD5Device extends Homey.Device {
     this.homey.setTimeout(() => this.account.poll().catch(() => {}), REFRESH_AFTER_SET_MS);
   }
 
+  /** Night setback: lower the manual setpoint by a percentage, remembering the original. */
+  async startSetback(percent) {
+    if (!this.raw) await this.account.poll();
+    if (!this.raw) throw new Error(this.homey.__('device.no_data'));
+    let from = this.getStoreValue('setback_from');
+    if (from == null) {
+      from = this.raw.ManualModeSetpoint / 100;
+      await this.setStoreValue('setback_from', from);
+    }
+    const min = this.raw.MinSetpoint / 100;
+    const to = Math.max(min, Math.round(from * (1 - Number(percent) / 100) * 2) / 2);
+    this.log(`Setback ${percent}%: ${from} -> ${to}`);
+    await this.setMode('manual', { temperature: to });
+  }
+
+  async endSetback() {
+    const from = this.getStoreValue('setback_from');
+    if (from == null) return;
+    await this.setMode('manual', { temperature: from });
+    await this.unsetStoreValue('setback_from');
+  }
+
   async _set(cap, value) {
     if (!this.hasCapability(cap)) return;
     if (this.getCapabilityValue(cap) === value) return;

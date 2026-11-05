@@ -33,6 +33,12 @@ class OWD5Driver extends Homey.Driver {
       .registerRunListener(({ device, temperature }) => device.setMode('manual', { temperature }));
     flows.getActionCard('boost')
       .registerRunListener(({ device }) => device.setMode('boost'));
+    flows.getActionCard('setback_start')
+      .registerRunListener(({ device, percent }) => device.startSetback(percent));
+    flows.getActionCard('setback_end')
+      .registerRunListener(({ device }) => device.endSetback());
+    flows.getConditionCard('setback_active')
+      .registerRunListener(({ device }) => device.getStoreValue('setback_from') != null);
   }
 
   _clientFrom(creds) {

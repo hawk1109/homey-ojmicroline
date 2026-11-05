@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "nl.hawk-it.ojmicroline",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "compatibility": ">=12.3.0",
   "sdk": 3,
   "platforms": [
@@ -231,6 +231,20 @@
             ]
           }
         ]
+      },
+      {
+        "id": "setback_active",
+        "title": {
+          "en": "Temperature !{{is|is not}} lowered",
+          "nl": "Temperatuur !{{is|is niet}} verlaagd"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=owd5"
+          }
+        ]
       }
     ],
     "actions": [
@@ -402,6 +416,61 @@
                 }
               }
             ]
+          }
+        ]
+      },
+      {
+        "id": "setback_start",
+        "title": {
+          "en": "Lower temperature by a percentage",
+          "nl": "Temperatuur verlagen met percentage"
+        },
+        "titleFormatted": {
+          "en": "Lower the manual temperature by [[percent]] %",
+          "nl": "Verlaag de handmatige temperatuur met [[percent]] %"
+        },
+        "hint": {
+          "en": "Remembers the current manual temperature so Restore temperature can put it back. Running it again while lowered does not lower further.",
+          "nl": "Onthoudt de huidige handmatige temperatuur zodat Temperatuur herstellen die kan terugzetten. Nogmaals uitvoeren terwijl verlaagd verlaagt niet verder."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=owd5"
+          },
+          {
+            "name": "percent",
+            "type": "number",
+            "min": 1,
+            "max": 90,
+            "step": 1,
+            "placeholder": {
+              "en": "20",
+              "nl": "20"
+            },
+            "title": {
+              "en": "Percent",
+              "nl": "Procent"
+            }
+          }
+        ]
+      },
+      {
+        "id": "setback_end",
+        "title": {
+          "en": "Restore temperature",
+          "nl": "Temperatuur herstellen"
+        },
+        "hint": {
+          "en": "Puts back the manual temperature remembered by Lower temperature by a percentage.",
+          "nl": "Zet de handmatige temperatuur terug die bij Temperatuur verlagen met percentage is onthouden."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=owd5"
           }
         ]
       }
